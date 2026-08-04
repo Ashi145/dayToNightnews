@@ -29,6 +29,24 @@ function estimateReadingTime(sections: WrittenSection[]): number {
   return Math.max(2, Math.ceil(words / 220));
 }
 
+function whyItMatters(category: string, confidence: number, sourceName: string): string {
+  const tones: Record<string, string> = {
+    World: 'International desks are tracking this closely as it may affect diplomatic relations and global stability in the coming days.',
+    Politics: 'This development carries direct implications for voters, legislation, and the balance of power — and is likely to shape the political conversation through the next cycle.',
+    Finance: 'Markets typically react within one to two trading sessions, so this story could move portfolios, yields, and the dollar before the close.',
+    Crypto: 'The digital asset market is highly sensitive to news of this type, and sharp price moves can follow within minutes of confirmation.',
+    AI: 'This development is significant for the broader AI research landscape and for how businesses, regulators, and consumers adopt the technology.',
+    Health: 'Public health officials typically issue guidance within 48 hours of developments like this, and the implications for patients and hospitals are direct.',
+    Science: 'Findings like this are usually followed by peer scrutiny and replication attempts, but the implications for the field are immediate.',
+    Sports: 'This result has immediate implications for the league standings, rosters, and the season ahead.',
+    Gaming: 'This matters for players, developers, and the broader gaming economy, which is among the fastest-growing segments of entertainment.',
+    Business: 'Corporate and industry observers will be watching closely, as this could shift competitive dynamics across the sector.',
+    Entertainment: 'This matters for audiences and the industry alike, with box office, streaming, and awards season implications in play.',
+  };
+  const tone = tones[category] || `Developments in the ${category} space tend to move quickly, and this report is now part of the permanent record.`;
+  return `${tone} Within the ${category} section, this report carries a confidence score of ${confidence}%, reflecting the reliability of ${sourceName} and consistency of the account at ingestion. That score is recalculated if corroborating or contradicting reports emerge.`;
+}
+
 export function writeArticle(article: LiveArticle): WrittenArticle {
   const title = cleanTitle(article.title);
   const lead = article.summary.replace(/\s+/g, ' ').trim();
@@ -61,7 +79,7 @@ export function writeArticle(article: LiveArticle): WrittenArticle {
     {
       heading: 'WHY IT MATTERS',
       paragraphs: [
-        `Stories in the ${category} space move fast, and the DayToNight newsroom is designed to surface them within minutes of publication rather than hours. This item is presented for context and should be read alongside our coverage and the original reporting.`,
+        whyItMatters(category, confidence, sourceName),
       ],
     },
     {
