@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import NewsCard from '@/components/news/NewsCard';
 import SecondaryCard from '@/components/news/SecondaryCard';
 import { fetchLiveNews } from '@/lib/liveNews';
+import Link from 'next/link';
 
 async function getArticle(slug: string) {
   // Try DB first
@@ -84,6 +85,20 @@ async function getArticle(slug: string) {
   return null;
 }
 
+export async function generateStaticParams() {
+  const dbArticles = await db.query.articles.findMany({ columns: { slug: true } });
+  const slugs = dbArticles.map((a) => a.slug);
+  try {
+    const live = await fetchLiveNews();
+    for (const a of live) {
+      if (!slugs.includes(a.slug)) slugs.push(a.slug);
+    }
+  } catch {
+    // live news unavailable at build time
+  }
+  return slugs.map((slug) => ({ slug }));
+}
+
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const data = await getArticle(slug);
@@ -96,9 +111,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <div className="container mx-auto px-4 max-w-[1300px] py-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-[11px] tracking-widest uppercase font-bold opacity-60 mb-6">
-          <a href="/" className="hover:text-black">Home</a>
+          <Link href="/" className="hover:text-black">Home</Link>
           <span>/</span>
-          <a href={`/category/${article.category.toLowerCase()}`} className="hover:text-black">{article.category}</a>
+          <Link href={`/category/${article.category.toLowerCase()}`} className="hover:text-black">{article.category}</Link>
           <span>/</span>
           <span className="text-black">Article</span>
         </div>
@@ -202,7 +217,7 @@ This is a living story. We will update as new verified facts arrive.`}
                 <li>• No contradictions detected</li>
                 <li>• Timeline consistent</li>
               </ul>
-              <a href="/admin" className="mt-4 block text-center bg-black text-white py-2 text-[11px] font-black uppercase tracking-widest">View full verification log →</a>
+              <Link href="/admin" className="mt-4 block text-center bg-black text-white py-2 text-[11px] font-black uppercase tracking-widest">View full verification log →</Link>
             </div>
 
             <div>

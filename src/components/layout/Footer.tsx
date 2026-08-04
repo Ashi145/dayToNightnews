@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer() {
   return (
     <footer className="mt-16 border-t-[6px] border-black bg-[#111] text-[#f5f2ec]">
@@ -29,7 +31,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <h4 className="font-bold uppercase tracking-widest text-xs mb-4 opacity-90">AI Transparency</h4>
             <ul className="space-y-2 text-sm opacity-60">
-              <li><a href="/admin" className="hover:text-white">Agent Dashboard</a></li>
+              <li><Link href="/admin" className="hover:text-white">Agent Dashboard</Link></li>
               <li><a href="#" className="hover:text-white">Verification Method</a></li>
               <li><a href="#" className="hover:text-white">Confidence Scoring</a></li>
               <li><a href="#" className="hover:text-white">Source Reliability</a></li>

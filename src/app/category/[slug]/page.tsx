@@ -54,6 +54,13 @@ async function getCategoryArticles(slug: string) {
   };
 }
 
+export async function generateStaticParams() {
+  const cats = await db.query.categories.findMany({ columns: { slug: true } });
+  const slugs = cats.map((c) => c.slug);
+  const extra = ['business', 'technology', 'world', 'general'];
+  return [...new Set([...slugs, ...extra])].map((slug) => ({ slug }));
+}
+
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const data = await getCategoryArticles(slug);

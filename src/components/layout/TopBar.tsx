@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { CloudSun, Search } from 'lucide-react';
 
@@ -22,7 +23,7 @@ export default function TopBar() {
           <a href="#" className="hover:text-white transition-colors hidden sm:block">Newsletter</a>
           <a href="#" className="hover:text-white transition-colors hidden sm:block">Podcasts</a>
           <span className="bg-[#c41e1a] text-white px-2.5 py-1 rounded-sm font-black tracking-widest uppercase text-[10px]">Subscribe for $1/week</span>
-          <a href="/admin" className="border border-white/20 px-2.5 py-1 rounded-sm hover:bg-white hover:text-black transition-colors uppercase font-bold">AI Control</a>
+          <Link href="/admin" className="border border-white/20 px-2.5 py-1 rounded-sm hover:bg-white hover:text-black transition-colors uppercase font-bold">AI Control</Link>
         </div>
       </div>
     </div>

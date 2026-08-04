@@ -3,6 +3,8 @@ import { db } from '@/db';
 import { articles } from '@/db/schema';
 import { desc } from 'drizzle-orm';
 
+export const dynamic = 'force-static';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://daytonightnews.com';
   const urls: MetadataRoute.Sitemap = [

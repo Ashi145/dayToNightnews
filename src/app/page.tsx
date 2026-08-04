@@ -8,8 +8,6 @@ import { db } from '@/db';
 import { articles as articlesTable } from '@/db/schema';
 import { desc } from 'drizzle-orm';
 
-export const revalidate = 60; // ISR every minute - fastest
-
 async function getAllNews() {
   let live: any[] = [];
   try {

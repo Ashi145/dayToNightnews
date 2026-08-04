@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function BreakingTicker({ items }: { items: { title: string, slug: string }[] }) {
@@ -16,9 +17,9 @@ export default function BreakingTicker({ items }: { items: { title: string, slug
           {duplicated.map((it, idx) => (
             <span key={idx} className="flex items-center gap-3">
               <span className="w-1 h-1 bg-white/70 rounded-full" />
-              <a href={`/articles/${it.slug}`} className="hover:underline font-medium tracking-wide">
+              <Link href={`/articles/${it.slug}`} className="hover:underline font-medium tracking-wide">
                 {it.title}
-              </a>
+              </Link>
             </span>
           ))}
         </div>
