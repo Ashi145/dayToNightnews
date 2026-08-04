@@ -6,7 +6,8 @@ import NewsCard from '@/components/news/NewsCard';
 import HeroCard from '@/components/news/HeroCard';
 import SecondaryCard from '@/components/news/SecondaryCard';
 import SectionHeader from '@/components/news/SectionHeader';
-import { fetchLiveNews } from '@/lib/liveNews';
+import { getLiveArticles } from '@/lib/newsData';
+import { deterministicImage } from '@/lib/images';
 
 async function getCategoryArticles(slug: string) {
   const category = await db.query.categories.findFirst({
@@ -16,7 +17,7 @@ async function getCategoryArticles(slug: string) {
   // Get live news for this category (mapped)
   let liveNews: any[] = [];
   try {
-    const allLive = await fetchLiveNews();
+    const allLive = await getLiveArticles();
     const targetCat = category?.name || slug.charAt(0).toUpperCase() + slug.slice(1);
     liveNews = allLive.filter(a => a.category.toLowerCase() === targetCat.toLowerCase() || a.category.toLowerCase() === slug.toLowerCase());
     if (liveNews.length === 0 && slug !== 'general') {
@@ -39,7 +40,7 @@ async function getCategoryArticles(slug: string) {
       category: r.category?.name || category.name,
       source: 'AI Newsroom',
       publishedAt: r.publishedAt || new Date(),
-      imageUrl: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=800',
+      imageUrl: deterministicImage(r.slug),
       confidenceScore: r.confidenceScore || 93,
       readingTime: r.readingTime || 4,
     }));

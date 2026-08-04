@@ -3,7 +3,8 @@ import SecondaryCard from '@/components/news/SecondaryCard';
 import NewsCard from '@/components/news/NewsCard';
 import SectionHeader from '@/components/news/SectionHeader';
 import TrendingRail from '@/components/news/TrendingRail';
-import { fetchLiveNews } from '@/lib/liveNews';
+import { getLiveArticles } from '@/lib/newsData';
+import { deterministicImage } from '@/lib/images';
 import { db } from '@/db';
 import { articles as articlesTable } from '@/db/schema';
 import { desc } from 'drizzle-orm';
@@ -11,7 +12,7 @@ import { desc } from 'drizzle-orm';
 async function getAllNews() {
   let live: any[] = [];
   try {
-    live = await fetchLiveNews();
+    live = await getLiveArticles();
   } catch (e) {
     console.error('live fetch failed', e);
   }
@@ -33,7 +34,7 @@ async function getAllNews() {
       source: 'DayToNight AI',
       sourceUrl: `/articles/${r.slug}`,
       publishedAt: r.publishedAt || new Date(),
-      imageUrl: `https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=800`,
+      imageUrl: deterministicImage(r.slug),
       confidenceScore: r.confidenceScore || 95,
       readingTime: r.readingTime || 4,
       isBreaking: true,

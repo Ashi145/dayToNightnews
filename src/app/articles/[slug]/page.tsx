@@ -4,7 +4,8 @@ import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import NewsCard from '@/components/news/NewsCard';
 import SecondaryCard from '@/components/news/SecondaryCard';
-import { fetchLiveNews } from '@/lib/liveNews';
+import { getLiveArticles } from '@/lib/newsData';
+import { deterministicImage } from '@/lib/images';
 import Link from 'next/link';
 
 async function getArticle(slug: string) {
@@ -39,7 +40,7 @@ async function getArticle(slug: string) {
         source: 'DayToNight AI Newsroom',
         sourceUrl: '',
         publishedAt: dbArticle.publishedAt || new Date(),
-        imageUrl: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200',
+        imageUrl: deterministicImage(dbArticle.slug),
         confidenceScore: dbArticle.confidenceScore || 95,
         readingTime: dbArticle.readingTime || 5,
       },
@@ -53,7 +54,7 @@ async function getArticle(slug: string) {
         category: r.category?.name || 'General',
         source: 'AI',
         publishedAt: r.publishedAt || new Date(),
-        imageUrl: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=800',
+        imageUrl: deterministicImage(r.slug),
         confidenceScore: r.confidenceScore || 90,
       })),
       isLive: false,
@@ -62,7 +63,7 @@ async function getArticle(slug: string) {
 
   // Fallback to live news
   try {
-    const live = await fetchLiveNews();
+    const live = await getLiveArticles();
     const found = live.find(a => a.slug === slug);
     if (found) {
       const related = live.filter(a => a.slug !== slug).slice(0, 4);
@@ -89,7 +90,7 @@ export async function generateStaticParams() {
   const dbArticles = await db.query.articles.findMany({ columns: { slug: true } });
   const slugs = dbArticles.map((a) => a.slug);
   try {
-    const live = await fetchLiveNews();
+    const live = await getLiveArticles();
     for (const a of live) {
       if (!slugs.includes(a.slug)) slugs.push(a.slug);
     }
