@@ -6,7 +6,7 @@ import { desc } from 'drizzle-orm';
 export const dynamic = 'force-static';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://daytonightnews.com';
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://ashiraf.cc';
   const urls: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: new Date(), changeFrequency: 'always', priority: 1 },
     { url: `${base}/admin`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.3 },
