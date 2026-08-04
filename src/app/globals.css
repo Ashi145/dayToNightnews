@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #fefcf8;
+  --color-foreground: #121212;
+  --color-card: #ffffff;
+  --color-card-foreground: #121212;
+  --color-primary: #c41e1a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f3f0e9;
+  --color-secondary-foreground: #121212;
+  --color-muted: #f5f2ec;
+  --color-muted-foreground: #6b6b6b;
+  --color-accent: #fff1ed;
+  --color-accent-foreground: #121212;
+  --color-border: #e8e2d9;
+  --color-input: #e8e2d9;
+  --color-ring: #c41e1a;
+  --color-destructive: #c41e1a;
+  --color-destructive-foreground: #ffffff;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3,h4 {
+    font-family: "Fraunces", "Times New Roman", Georgia, serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Newspaper Masthead */
+.masthead-title {
+  font-family: "Old English Text MT", "Playfair Display", Georgia, serif;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+}
+
+/* Animations */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 60s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Custom scrollbar hide for category rail */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Paper texture subtle */
+.paper-bg {
+  background-image: radial-gradient(#12121208 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Prose tweaks */
+.prose-newspaper {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #1a1a1a;
+}
+
+/* Divider styles */
+.divider-dot::after {
+  content: "•";
+  margin: 0 8px;
+  color: #c41e1a;
+  font-weight: bold;
+}
+
+/* Live badge */
+.live-badge {
+  background: #c41e1a;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.live-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 1s infinite;
+}
