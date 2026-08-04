@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import SmartImage from './SmartImage';
 
 interface Props {
   article: {
@@ -19,7 +20,7 @@ export default function HeroCard({ article }: Props) {
   return (
     <Link href={`/articles/${article.slug}`} className="group block">
       <div className="relative overflow-hidden bg-black">
-        <img src={article.imageUrl} alt={article.title} className="w-full h-[420px] md:h-[520px] object-cover opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700" />
+        <SmartImage src={article.imageUrl} alt={article.title} category={article.category} seed={article.slug} className="w-full h-[420px] md:h-[520px] object-cover opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
         <div className="absolute bottom-0 p-6 md:p-8 text-white max-w-3xl">
           <div className="flex items-center gap-2 mb-3">

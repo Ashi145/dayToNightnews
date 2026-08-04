@@ -5,7 +5,9 @@ import { notFound } from 'next/navigation';
 import NewsCard from '@/components/news/NewsCard';
 import SecondaryCard from '@/components/news/SecondaryCard';
 import { getLiveArticles } from '@/lib/newsData';
+import { writeArticle } from '@/lib/writer';
 import { deterministicImage } from '@/lib/images';
+import SmartImage from '@/components/news/SmartImage';
 import Link from 'next/link';
 
 async function getArticle(slug: string) {
@@ -29,6 +31,16 @@ async function getArticle(slug: string) {
       with: { category: true },
     });
 
+    let sections: any[] = [];
+    let faq: any[] = [];
+    try {
+      const parsed = JSON.parse(dbArticle.content || '{}');
+      sections = parsed.sections || [];
+      faq = parsed.faq || [];
+    } catch {
+      sections = [];
+    }
+
     return {
       article: {
         id: dbArticle.id,
@@ -40,9 +52,11 @@ async function getArticle(slug: string) {
         source: 'DayToNight AI Newsroom',
         sourceUrl: '',
         publishedAt: dbArticle.publishedAt || new Date(),
-        imageUrl: deterministicImage(dbArticle.slug),
+        imageUrl: deterministicImage(dbArticle.category?.name, dbArticle.slug),
         confidenceScore: dbArticle.confidenceScore || 95,
         readingTime: dbArticle.readingTime || 5,
+        sections,
+        faq,
       },
       sources: srcs.map(s => s.source).filter(Boolean),
       events: evts,
@@ -67,8 +81,9 @@ async function getArticle(slug: string) {
     const found = live.find(a => a.slug === slug);
     if (found) {
       const related = live.filter(a => a.slug !== slug).slice(0, 4);
+      const written = writeArticle(found);
       return {
-        article: found,
+        article: { ...written, sections: written.sections, faq: written.faq, sourceUrl: found.sourceUrl },
         sources: [{ name: found.source, url: found.sourceUrl, reliabilityScore: 92 } as any],
         events: [
           { timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5), description: `First reported by ${found.source}` },
@@ -107,8 +122,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   const { article, sources, events, related } = data;
 
+  const schemaJson = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.title,
+    description: article.summary || '',
+    image: article.imageUrl,
+    datePublished: new Date(article.publishedAt as any).toISOString(),
+    author: { '@type': 'Organization', name: 'DayToNight Newsroom' },
+    publisher: { '@type': 'Organization', name: 'DayToNight News' },
+    isPartOf: { '@type': 'WebSite', name: 'DayToNight News' },
+  };
+
   return (
     <div className="min-h-screen bg-[#fefcf8]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaJson) }} />
       <div className="container mx-auto px-4 max-w-[1300px] py-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-[11px] tracking-widest uppercase font-bold opacity-60 mb-6">
@@ -151,10 +179,22 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
 
-            <img src={article.imageUrl} alt={article.title} className="w-full h-[420px] object-cover mt-6" />
+            <SmartImage src={article.imageUrl} alt={article.title} category={article.category} seed={article.slug} className="w-full h-[420px] object-cover mt-6" />
             <p className="text-[11px] opacity-50 mt-2 font-serif italic">Image: {article.source} • AI verified rights • {new Date(article.publishedAt as any).toLocaleDateString()}</p>
 
             <div className="mt-8 prose-newspaper max-w-none">
+              {(article.sections && article.sections.length > 0) ? (
+                <div className="leading-relaxed space-y-6">
+                  {article.sections.map((sec: any, i: number) => (
+                    <section key={i}>
+                      <h2 className="font-black uppercase tracking-widest text-sm mb-2">{sec.heading}</h2>
+                      {sec.paragraphs.map((p: string, j: number) => (
+                        <p key={j} className="font-serif text-[17px] leading-relaxed opacity-90 mb-3">{p}</p>
+                      ))}
+                    </section>
+                  ))}
+                </div>
+              ) : (
               <div className="whitespace-pre-wrap leading-relaxed">
                 {article.content || `Full analysis of ${article.title}. This story was discovered by our Breaking News Agent scanning ${article.source} and 40+ other feeds. Our Verification Agent cross-checked with multiple independent trusted sources. Research Agent built a timeline and collected background. Writing Agent generated this report, Editor Agent checked for bias and readability. Media and SEO agents finalized assets.
 
@@ -166,7 +206,30 @@ Key takeaways:
 
 This is a living story. We will update as new verified facts arrive.`}
               </div>
+              )}
             </div>
+
+            {(article.faq && article.faq.length > 0) && (
+              <div className="mt-12 border-t-2 border-black pt-6">
+                <h3 className="font-black uppercase tracking-widest text-sm mb-4">FAQ</h3>
+                <div className="space-y-4">
+                  {article.faq.map((f: any, i: number) => (
+                    <div key={i}>
+                      <div className="font-bold">{f.question}</div>
+                      <div className="font-serif opacity-70 text-[14px] mt-1">{f.answer}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {article.sourceUrl && (
+              <div className="mt-12">
+                <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-block bg-black text-white px-6 py-3 text-[12px] font-black uppercase tracking-widest hover:bg-[#c41e1a] transition-colors">
+                  Read Original Source ↗
+                </a>
+              </div>
+            )}
 
             {/* Timeline */}
             {events.length > 0 && (

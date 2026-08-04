@@ -1,5 +1,5 @@
 import Parser from 'rss-parser';
-import { deterministicImage, extractImageFromHtml } from '@/lib/images';
+import { deterministicImage, extractImageFromHtml, isUsableImageUrl, decodeImageUrl, upgradeImageQuality } from '@/lib/images';
 
 type CustomFeed = { title: string; description: string; link: string; pubDate?: string };
 type CustomItem = {
@@ -61,22 +61,6 @@ const RSS_SOURCES = [
   { url: 'https://feeds.arstechnica.com/arstechnica/index', category: 'Technology', source: 'Ars Technica' },
 ];
 
-const IMAGE_FALLBACKS: Record<string, string> = {
-  World: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=1200',
-  Business: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200',
-  Technology: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200',
-  AI: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200',
-  Science: 'https://images.unsplash.com/photo-1464802686167-b939a6910659?q=80&w=1200',
-  Health: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200',
-  Politics: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?q=80&w=1200',
-  Finance: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200',
-  Crypto: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?q=80&w=1200',
-  Sports: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=1200',
-  Entertainment: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1200',
-  Gaming: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200',
-  General: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200',
-};
-
 function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 }
@@ -90,15 +74,20 @@ function extractFeedImage(item: CustomItem): string | null {
   const media: any = item.mediaContent || item.mediaThumbnail;
   if (media) {
     const list = Array.isArray(media) ? media : [media];
+    const candidates: string[] = [];
     for (const m of list) {
       const url = m?.$?.url || m?.url;
-      if (typeof url === 'string' && !url.startsWith('data:')) return url;
+      if (typeof url === 'string') candidates.push(decodeImageUrl(url));
+    }
+    candidates.sort((a, b) => b.length - a.length);
+    for (const url of candidates) {
+      if (isUsableImageUrl(url)) return upgradeImageQuality(url);
     }
   }
   const enc = item.enclosure as any;
   if (enc) {
     const url = typeof enc === 'string' ? enc : enc?.url;
-    if (typeof url === 'string' && /\.(jpe?g|png|webp|avif)/i.test(url)) return url;
+    if (typeof url === 'string' && /\.(jpe?g|png|webp|avif)/i.test(url) && isUsableImageUrl(url)) return upgradeImageQuality(url);
   }
   const fromHtml = extractImageFromHtml(item.content);
   if (fromHtml) return fromHtml;
@@ -135,7 +124,7 @@ export async function fetchLiveNews(force = false): Promise<LiveArticle[]> {
           source: src.source,
           sourceUrl: item.link!,
           publishedAt: pubDate,
-          imageUrl: feedImage || deterministicImage(item.title) || IMAGE_FALLBACKS[src.category] || IMAGE_FALLBACKS.General,
+          imageUrl: feedImage || deterministicImage(src.category, item.title),
           confidenceScore: 92 + Math.floor(Math.random() * 7),
           readingTime: estimateReadingTime(summary),
           isBreaking: Math.random() > 0.85,
@@ -166,7 +155,7 @@ export async function fetchLiveNews(force = false): Promise<LiveArticle[]> {
           source: 'Hacker News',
           sourceUrl: hit.url || `https://news.ycombinator.com/item?id=${hit.objectID}`,
           publishedAt: pubDate,
-          imageUrl: deterministicImage(hit.title),
+          imageUrl: deterministicImage(category, hit.title),
           confidenceScore: 88,
           readingTime: 4,
           isTrending: (hit.points || 0) > 150,
@@ -201,7 +190,9 @@ export async function fetchLiveNews(force = false): Promise<LiveArticle[]> {
 
 export async function getBreakingNews(): Promise<LiveArticle[]> {
   const all = await fetchLiveNews();
-  return all.filter(a => a.isBreaking).slice(0, 8);
+  const SIX_HOURS = 1000 * 60 * 60 * 6;
+  const now = Date.now();
+  return all.filter(a => a.isBreaking && (now - new Date(a.publishedAt).getTime()) < SIX_HOURS).slice(0, 8);
 }
 
 export async function getTrendingNews(): Promise<LiveArticle[]> {

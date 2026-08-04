@@ -1,11 +1,3 @@
-:HL["/_next/static/chunks/01.90w.p-nl81.css","style"]
+:HL["/_next/static/chunks/0jeyeur.1i2_m.css","style"]
 :HL["https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,50,1&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;700;900&display=swap","style"]
-:HL["https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200","image"]
-:HL["https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/c8b7/live/86169830-8fe0-11f1-bb3b-43bf44dc94d9.jpg","image"]
-:HL["https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/9d2c/live/4e052df0-8fde-11f1-a999-eb18d79411a9.jpg","image"]
-:HL["https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/0651/live/2e6f7a20-8fe0-11f1-bb3b-43bf44dc94d9.jpg","image"]
-:HL["https://i.guim.co.uk/img/media/b2484683ad17d4fa19f6623cc2f8066b334fc964/0_0_2048_1638/master/2048.jpg?width=140&quality=85&auto=format&fit=max&s=747b6e1aacbb2e48b915fa5d6a6031c0","image"]
-:HL["https://i.guim.co.uk/img/media/b52f9322bf0631613feef0b0ec89bc4e8c8fc3de/913_0_4587_3668/master/4587.jpg?width=140&quality=85&auto=format&fit=max&s=e3d479b67ca47bd6caa829dcc4ddfcf1","image"]
-:HL["https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/c6b7/live/f96ea650-8f50-11f1-99e6-95543b07d23d.jpg","image"]
-:HL["https://i.guim.co.uk/img/media/6c63732f043a33c54aefb57e26f095c70b4c732b/209_0_2141_1712/master/2141.jpg?width=140&quality=85&auto=format&fit=max&s=969c8b309d371074f99281536baa4446","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"category","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"business","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"twEuoebq9paf0-LkGzzaq"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"category","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"business","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"CMV6s1aCbhB50Kr_YCEUN"}

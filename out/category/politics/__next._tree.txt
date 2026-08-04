@@ -1,7 +1,3 @@
-:HL["/_next/static/chunks/01.90w.p-nl81.css","style"]
+:HL["/_next/static/chunks/0jeyeur.1i2_m.css","style"]
 :HL["https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,50,1&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;700;900&display=swap","style"]
-:HL["https://static01.nyt.com/images/2026/08/04/multimedia/04midterms-michigan-senate-VERSION-bkqh/04midterms-michigan-senate-VERSION-bkqh-mediumSquareAt3X.jpg","image"]
-:HL["https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=1200","image"]
-:HL["https://static01.nyt.com/images/2026/08/03/multimedia/03dc-trump-iran-hjgl/03dc-trump-iran-hjgl-mediumSquareAt3X.jpg","image"]
-:HL["https://static01.nyt.com/images/2026/07/23/multimedia/00up-skubal1-gtjb/00up-skubal1-gtjb-mediumSquareAt3X.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"category","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"politics","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"twEuoebq9paf0-LkGzzaq"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"category","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"politics","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"CMV6s1aCbhB50Kr_YCEUN"}

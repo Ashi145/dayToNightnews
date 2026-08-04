@@ -1,7 +1,3 @@
-:HL["/_next/static/chunks/01.90w.p-nl81.css","style"]
+:HL["/_next/static/chunks/0jeyeur.1i2_m.css","style"]
 :HL["https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,50,1&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;700;900&display=swap","style"]
-:HL["https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1200","image"]
-:HL["https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/0473/live/63c04990-8f39-11f1-973f-390a1966f1f1.jpg","image"]
-:HL["https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/679b/live/1d4dbf50-8bfc-11f1-a52a-dba993a97936.jpg","image"]
-:HL["https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/f990/live/6272fba0-8dd1-11f1-b8ee-9b3c26ad07bb.jpg","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"category","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"science","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"twEuoebq9paf0-LkGzzaq"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"category","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"science","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"CMV6s1aCbhB50Kr_YCEUN"}

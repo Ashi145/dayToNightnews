@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import SmartImage from './SmartImage';
 
 export default function SecondaryCard({ article, compact = false }: { article: any, compact?: boolean }) {
   if (compact) {
@@ -12,13 +13,13 @@ export default function SecondaryCard({ article, compact = false }: { article: a
           <h3 className="font-bold leading-tight text-[15px] group-hover:text-[#c41e1a] transition-colors line-clamp-3">{article.title}</h3>
           <p className="text-[12px] opacity-60 mt-1 line-clamp-2 font-serif">{article.summary}</p>
         </div>
-        <img src={article.imageUrl} alt={article.title} className="w-20 h-20 object-cover shrink-0 group-hover:opacity-90" />
+        <SmartImage src={article.imageUrl} alt={article.title} category={article.category} seed={article.slug} className="w-20 h-20 object-cover shrink-0 group-hover:opacity-90" />
       </Link>
     );
   }
   return (
     <Link href={`/articles/${article.slug}`} className="group block border-b border-black/10 pb-5 last:border-0 last:pb-0">
-      <img src={article.imageUrl} alt={article.title} className="w-full h-48 object-cover mb-3 group-hover:brightness-[0.95] transition-all" />
+      <SmartImage src={article.imageUrl} alt={article.title} category={article.category} seed={article.slug} className="w-full h-48 object-cover mb-3 group-hover:brightness-[0.95] transition-all" />
       <div className="flex items-center gap-2 mb-2">
         <span className="text-[10px] font-black tracking-widest uppercase text-[#c41e1a]">{article.category}</span>
         <span className="text-[11px] opacity-50">{new Date(article.publishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {article.source}</span>

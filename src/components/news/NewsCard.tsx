@@ -1,10 +1,11 @@
 import Link from 'next/link';
+import SmartImage from './SmartImage';
 
 export default function NewsCard({ article }: { article: any }) {
   return (
     <Link href={`/articles/${article.slug}`} className="group block">
       <div className="overflow-hidden bg-white border border-black/5">
-        <img src={article.imageUrl} alt={article.title} className="w-full h-44 object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+        <SmartImage src={article.imageUrl} alt={article.title} category={article.category} seed={article.slug} className="w-full h-44 object-cover group-hover:scale-[1.02] transition-transform duration-500" />
       </div>
       <div className="pt-3">
         <div className="flex items-center gap-2 mb-1.5">
