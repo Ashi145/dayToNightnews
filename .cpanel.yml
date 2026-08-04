@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/ashiukiu/public_html/
+    - /bin/rm -rf $DEPLOYPATH/_next $DEPLOYPATH/articles $DEPLOYPATH/category $DEPLOYPATH/admin $DEPLOYPATH/404.html $DEPLOYPATH/index.html $DEPLOYPATH/robots.txt $DEPLOYPATH/sitemap.xml
+    - /bin/cp -r out/* $DEPLOYPATH

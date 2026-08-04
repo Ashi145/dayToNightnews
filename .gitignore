@@ -3,7 +3,6 @@
 
 # next.js
 /.next/
-/out/
 tsconfig.tsbuildinfo
 
 # production

@@ -1,0 +1,6 @@
+:HL["/_next/static/chunks/01.90w.p-nl81.css","style"]
+:HL["https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,50,1&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;700;900&display=swap","style"]
+:HL["https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=1200","image"]
+:HL["https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200","image"]
+:HL["https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200","image"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"articles","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"more-than-150-migrants-rescued-after-boat-catches-fire-in-channel-french-authori","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"JDIoh5xhcUnShJUUntmLM"}
