@@ -4,7 +4,7 @@ import NewsCard from '@/components/news/NewsCard';
 import SectionHeader from '@/components/news/SectionHeader';
 import TrendingRail from '@/components/news/TrendingRail';
 import { getLiveArticles } from '@/lib/newsData';
-import { deterministicImage } from '@/lib/images';
+import { deterministicImage, imageFromStoredContent } from '@/lib/images';
 import { db } from '@/db';
 import { articles as articlesTable } from '@/db/schema';
 import { desc } from 'drizzle-orm';
@@ -34,7 +34,7 @@ async function getAllNews() {
       source: 'DayToNight AI',
       sourceUrl: `/articles/${r.slug}`,
       publishedAt: r.publishedAt || new Date(),
-      imageUrl: deterministicImage(r.category?.name || 'General', r.slug),
+      imageUrl: imageFromStoredContent(r.content) || deterministicImage(r.category?.name || 'General', r.slug),
       confidenceScore: r.confidenceScore || 95,
       readingTime: r.readingTime || 4,
       isBreaking: true,

@@ -177,14 +177,15 @@ function extractFeedImage(item: CustomItem): string | null {
   const media: any = item.mediaContent || item.mediaThumbnail;
   if (media) {
     const list = Array.isArray(media) ? media : [media];
-    const candidates: string[] = [];
+    const candidates: Array<{ url: string; width: number }> = [];
     for (const m of list) {
       const url = m?.$?.url || m?.url;
-      if (typeof url === 'string') candidates.push(decodeImageUrl(url));
+      const width = parseInt(m?.$?.width || m?.width || '0', 10) || 0;
+      if (typeof url === 'string') candidates.push({ url: decodeImageUrl(url), width });
     }
-    candidates.sort((a, b) => b.length - a.length);
-    for (const url of candidates) {
-      if (isUsableImageUrl(url)) return upgradeImageQuality(url);
+    candidates.sort((a, b) => b.width - a.width || b.url.length - a.url.length);
+    for (const c of candidates) {
+      if (isUsableImageUrl(c.url)) return upgradeImageQuality(c.url);
     }
   }
   const enc = item.enclosure as any;
@@ -219,6 +220,10 @@ export async function fetchLiveNews(force = false): Promise<LiveArticle[]> {
         } catch {
           pubDate = new Date();
           console.warn(`Unparseable date for ${item.title}`);
+        }
+        if (isNaN(pubDate.getTime())) {
+          pubDate = new Date();
+          console.warn(`Invalid date for ${item.title}, using now`);
         }
         const snippet = item.contentSnippet || '';
         const feedImage = extractFeedImage(item);
@@ -258,6 +263,7 @@ export async function fetchLiveNews(force = false): Promise<LiveArticle[]> {
       return (json.hits as any[]).slice(0, 6).map((hit): LiveArticle | null => {
         if (!hit.title) return null;
         const pubDate = new Date(hit.created_at);
+        if (isNaN(pubDate.getTime())) return null;
         const category = assignCategory('Technology', hit.title, hit.story_text || '');
         return {
           id: `hn-${hit.objectID}`,

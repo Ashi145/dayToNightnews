@@ -6,7 +6,7 @@ import NewsCard from '@/components/news/NewsCard';
 import SecondaryCard from '@/components/news/SecondaryCard';
 import { getLiveArticles } from '@/lib/newsData';
 import { writeArticle } from '@/lib/writer';
-import { deterministicImage } from '@/lib/images';
+import { deterministicImage, imageFromStoredContent } from '@/lib/images';
 import SmartImage from '@/components/news/SmartImage';
 import Link from 'next/link';
 
@@ -52,7 +52,7 @@ async function getArticle(slug: string) {
         source: 'DayToNight AI Newsroom',
         sourceUrl: '',
         publishedAt: dbArticle.publishedAt || new Date(),
-        imageUrl: deterministicImage(dbArticle.category?.name, dbArticle.slug),
+        imageUrl: imageFromStoredContent(dbArticle.content) || deterministicImage(dbArticle.category?.name, dbArticle.slug),
         confidenceScore: dbArticle.confidenceScore || 95,
         readingTime: dbArticle.readingTime || 5,
         sections,
@@ -68,7 +68,7 @@ async function getArticle(slug: string) {
         category: r.category?.name || 'General',
         source: 'AI',
         publishedAt: r.publishedAt || new Date(),
-        imageUrl: deterministicImage(r.category?.name || 'General', r.slug),
+        imageUrl: imageFromStoredContent(r.content) || deterministicImage(r.category?.name || 'General', r.slug),
         confidenceScore: r.confidenceScore || 90,
       })),
       isLive: false,
@@ -122,13 +122,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   const { article, sources, events, related } = data;
 
+  const pubDate = new Date(article.publishedAt as any);
+  const datePublished = isNaN(pubDate.getTime()) ? new Date().toISOString() : pubDate.toISOString();
+
   const schemaJson = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
     headline: article.title,
     description: article.summary || '',
     image: article.imageUrl,
-    datePublished: new Date(article.publishedAt as any).toISOString(),
+    datePublished,
     author: { '@type': 'Organization', name: 'DayToNight Newsroom' },
     publisher: { '@type': 'Organization', name: 'DayToNight News' },
     isPartOf: { '@type': 'WebSite', name: 'DayToNight News' },

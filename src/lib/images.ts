@@ -123,7 +123,7 @@ export function deterministicImage(categoryOrSeed?: string, seed?: string): stri
   return pool[hashString(seedKey) % pool.length];
 }
 
-const JUNK_RE = /1x1|pixel|\.svg|spacer|icon|logo|avatar|placeholder|blank|\/transparent/i;
+const JUNK_RE = /1x1|pixel|\.svg|spacer|icon|logo|avatar|placeholder|blank|\/transparent|emoji|favicon|shim|badge|loading|spinner/i;
 
 export function isUsableImageUrl(url: string): boolean {
   if (!url || url.startsWith('data:')) return false;
@@ -153,14 +153,53 @@ export function upgradeImageQuality(url: string): string {
   return url;
 }
 
-export function extractImageFromHtml(html: string | undefined | null): string | null {
-  if (!html) return null;
-  const matches = html.match(/<img[^>]+src=["']([^"']+)["']/gi) || [];
-  for (const tag of matches) {
-    const srcMatch = tag.match(/src=["']([^"']+)["']/i);
-    if (!srcMatch) continue;
-    const src = decodeImageUrl(srcMatch[1]);
-    if (isUsableImageUrl(src)) return upgradeImageQuality(src);
+function largestSrcset(srcset: string): string | null {
+  const candidates: Array<{ url: string; width: number }> = [];
+  for (const part of srcset.split(',')) {
+    const [url, size] = part.trim().split(/\s+/);
+    if (!url || /^data:/i.test(url)) continue;
+    const width = size?.endsWith('w') ? parseInt(size, 10) : 0;
+    candidates.push({ url: decodeImageUrl(url), width: width || 0 });
+  }
+  candidates.sort((a, b) => b.width - a.width || b.url.length - a.url.length);
+  for (const c of candidates) {
+    if (isUsableImageUrl(c.url)) return c.url;
   }
   return null;
+}
+
+export function extractImageFromHtml(html: string | undefined | null): string | null {
+  if (!html) return null;
+  const matches = html.match(/<img[^>]*>/gi) || [];
+  for (const tag of matches) {
+    const attr = (name: string): string | null => {
+      const m = tag.match(new RegExp(`${name}\\s*=\\s*["']([^"']+)["']`, 'i'));
+      return m ? m[1] : null;
+    };
+    const width = parseInt(attr('width') || '', 10);
+    const height = parseInt(attr('height') || '', 10);
+    if ((width && width < 250) || (height && height < 140)) continue;
+
+    let src = attr('src') || attr('data-src') || attr('data-lazy-src') || attr('data-original') || attr('data-large-src');
+    const srcset = attr('srcset') || attr('data-srcset');
+    if (srcset) {
+      const large = largestSrcset(srcset);
+      if (large) src = large;
+    }
+    if (!src || /^data:/i.test(src)) continue;
+    if (!isUsableImageUrl(src)) continue;
+    return upgradeImageQuality(src);
+  }
+  return null;
+}
+
+export function imageFromStoredContent(content: string | null | undefined): string | null {
+  if (!content) return null;
+  try {
+    const parsed = JSON.parse(content);
+    const url = parsed && parsed.imageUrl;
+    return typeof url === 'string' && isUsableImageUrl(url) ? url : null;
+  } catch {
+    return null;
+  }
 }

@@ -7,7 +7,7 @@ import HeroCard from '@/components/news/HeroCard';
 import SecondaryCard from '@/components/news/SecondaryCard';
 import SectionHeader from '@/components/news/SectionHeader';
 import { getLiveArticles } from '@/lib/newsData';
-import { deterministicImage } from '@/lib/images';
+import { deterministicImage, imageFromStoredContent } from '@/lib/images';
 
 async function getCategoryArticles(slug: string) {
   const category = await db.query.categories.findFirst({
@@ -40,7 +40,7 @@ async function getCategoryArticles(slug: string) {
       category: r.category?.name || category.name,
       source: 'AI Newsroom',
       publishedAt: r.publishedAt || new Date(),
-      imageUrl: deterministicImage(r.category?.name || category.name, r.slug),
+      imageUrl: imageFromStoredContent(r.content) || deterministicImage(r.category?.name || category.name, r.slug),
       confidenceScore: r.confidenceScore || 93,
       readingTime: r.readingTime || 4,
     }));

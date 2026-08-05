@@ -75,6 +75,7 @@ export async function archiveArticle(article: LiveArticle): Promise<WrittenArtic
         sections: written.sections,
         faq: written.faq,
         provenance: written.provenance,
+        imageUrl: written.imageUrl || null,
       }),
       status: 'published',
       confidenceScore: written.confidenceScore,
