@@ -40,7 +40,7 @@ async function getCategoryArticles(slug: string) {
       category: r.category?.name || category.name,
       source: 'AI Newsroom',
       publishedAt: r.publishedAt || new Date(),
-      imageUrl: deterministicImage(r.slug),
+      imageUrl: deterministicImage(r.category?.name || category.name, r.slug),
       confidenceScore: r.confidenceScore || 93,
       readingTime: r.readingTime || 4,
     }));

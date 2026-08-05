@@ -34,7 +34,7 @@ async function getAllNews() {
       source: 'DayToNight AI',
       sourceUrl: `/articles/${r.slug}`,
       publishedAt: r.publishedAt || new Date(),
-      imageUrl: deterministicImage(r.slug),
+      imageUrl: deterministicImage(r.category?.name || 'General', r.slug),
       confidenceScore: r.confidenceScore || 95,
       readingTime: r.readingTime || 4,
       isBreaking: true,

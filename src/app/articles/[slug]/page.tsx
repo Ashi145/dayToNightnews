@@ -68,7 +68,7 @@ async function getArticle(slug: string) {
         category: r.category?.name || 'General',
         source: 'AI',
         publishedAt: r.publishedAt || new Date(),
-        imageUrl: deterministicImage(r.slug),
+        imageUrl: deterministicImage(r.category?.name || 'General', r.slug),
         confidenceScore: r.confidenceScore || 90,
       })),
       isLive: false,
