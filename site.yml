@@ -1,0 +1,9 @@
+# Site configuration for DayToNightNews
+name: DayToNightNews
+url: https://ashiraf.cc
+locale: en
+description: AI-powered newsroom discovering breaking stories every minute, verified across 5 independent sources.
+sitemap: https://ashiraf.cc/sitemap.xml
+robots: https://ashiraf.cc/robots.txt
+verification:
+  google: pending
