@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import NewsletterForm from './NewsletterForm';
 
 export default function Footer() {
   return (
@@ -39,13 +40,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="lg:col-span-3">
+          <div id="newsletter" className="lg:col-span-3">
             <h4 className="font-bold uppercase tracking-widest text-xs mb-4 opacity-90">Subscribe to the Briefing</h4>
             <p className="text-xs opacity-60 mb-3">Get the top 5 AI-verified stories at 7AM, 12PM, 7PM ET.</p>
-            <div className="flex gap-2">
-              <input placeholder="your@email.com" className="bg-white/10 border border-white/10 px-3 py-2 text-sm w-full rounded-sm placeholder:opacity-50" />
-              <button className="bg-[#c41e1a] text-white px-4 py-2 text-xs font-black uppercase tracking-widest rounded-sm">Join</button>
-            </div>
+            <NewsletterForm />
             <p className="text-[10px] opacity-40 mt-3 tracking-wide">No spam • Unsubscribe anytime • AI will never sell your data</p>
           </div>
         </div>
