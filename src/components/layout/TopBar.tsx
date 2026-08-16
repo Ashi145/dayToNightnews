@@ -22,9 +22,11 @@ export default function TopBar() {
         </div>
         <div className="flex items-center gap-4">
           <a href="#newsletter" className="hover:text-white transition-colors hidden sm:block">Newsletter</a>
+          <Link href="/subscribe" className="hover:text-white transition-colors hidden sm:block">Subscribe</Link>
           <a href="#" className="hover:text-white transition-colors hidden sm:block">Podcasts</a>
           <span className="bg-[#c41e1a] text-white px-2.5 py-1 rounded-sm font-black tracking-widest uppercase text-[10px]">Subscribe for $1/week</span>
           <GoogleLoginButton />
+          <Link href="/profile" className="border border-white/20 px-2.5 py-1 rounded-sm hover:bg-white hover:text-black transition-colors uppercase font-bold">Profile</Link>
           <Link href="/admin" className="border border-white/20 px-2.5 py-1 rounded-sm hover:bg-white hover:text-black transition-colors uppercase font-bold">AI Control</Link>
         </div>
       </div>

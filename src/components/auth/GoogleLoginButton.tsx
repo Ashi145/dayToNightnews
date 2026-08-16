@@ -1,17 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { GOOGLE_USER_STORAGE_KEY, type AccountProfile } from '@/lib/account';
 
 const GOOGLE_CLIENT_ID =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
   '1078755435065-eh3fs36hbitib5bssmd83rf5mp13fkto.apps.googleusercontent.com';
-const USER_STORAGE_KEY = 'daytonight-google-user';
-
-type GoogleUser = {
-  name: string;
-  email: string;
-  picture?: string;
-};
+type GoogleUser = AccountProfile;
 
 type GoogleAccounts = {
   id: {
@@ -46,9 +41,9 @@ export default function GoogleLoginButton() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(USER_STORAGE_KEY);
+    const saved = window.localStorage.getItem(GOOGLE_USER_STORAGE_KEY);
     if (saved) {
-      try { setUser(JSON.parse(saved) as GoogleUser); } catch { window.localStorage.removeItem(USER_STORAGE_KEY); }
+      try { setUser(JSON.parse(saved) as GoogleUser); } catch { window.localStorage.removeItem(GOOGLE_USER_STORAGE_KEY); }
     }
 
     const setupGoogle = () => {
@@ -58,7 +53,7 @@ export default function GoogleLoginButton() {
         callback: ({ credential }) => {
           const profile = readGoogleProfile(credential);
           if (!profile) return;
-          window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(profile));
+          window.localStorage.setItem(GOOGLE_USER_STORAGE_KEY, JSON.stringify(profile));
           setUser(profile);
         },
       });
@@ -83,7 +78,7 @@ export default function GoogleLoginButton() {
   }, []);
 
   function signOut() {
-    window.localStorage.removeItem(USER_STORAGE_KEY);
+    window.localStorage.removeItem(GOOGLE_USER_STORAGE_KEY);
     window.google?.accounts.id.disableAutoSelect();
     setUser(null);
   }

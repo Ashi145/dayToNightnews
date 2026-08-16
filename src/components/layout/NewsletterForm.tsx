@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from 'react';
+import { GOOGLE_USER_STORAGE_KEY } from '@/lib/account';
 
 const SUBSCRIBER_EMAIL = process.env.NEXT_PUBLIC_NEWSLETTER_EMAIL || 'newsletter@ashiraf.cc';
 const SUBSCRIPTION_STORAGE_KEY = 'daytonight-newsletter-email';
@@ -10,7 +11,7 @@ export default function NewsletterForm() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const savedUser = window.localStorage.getItem('daytonight-google-user');
+    const savedUser = window.localStorage.getItem(GOOGLE_USER_STORAGE_KEY);
     if (savedUser) {
       try { setEmail((JSON.parse(savedUser) as { email?: string }).email || ''); } catch { /* leave empty */ }
     }
