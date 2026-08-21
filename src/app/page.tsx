@@ -77,10 +77,48 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-[#fefcf8]">
       <main className="container mx-auto px-4 py-6 max-w-[1400px]">
-        {/* Above fold: 3 column newspaper */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 border-b border-black/10 pb-8">
+        {/* Mobile: linear curated stack — hero → headlines → trending → markets */}
+        <div className="lg:hidden space-y-6 border-b border-black/10 pb-8">
+          {/* 1. Hero + 3 supporting stories */}
+          <div>
+            <HeroCard article={hero} />
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {tertiary.slice(0, 3).map((a, i) => <SecondaryCard key={i} article={a} />)}
+            </div>
+          </div>
+
+          {/* 2. Today's Headlines */}
+          <div>
+            <SectionHeader title="Today's Headlines" subtitle={`${all.length} verified stories`} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {latest.slice(0, 4).map((a, i) => <NewsCard key={i} article={a} />)}
+            </div>
+          </div>
+
+          {/* 3. Most Read Right Now — below headlines on mobile */}
+          <TrendingRail articles={trending.slice(0, 5)} title="Most Read Right Now" />
+
+          {/* 4. Markets — collapsible on mobile */}
+          <details className="border border-black/10 bg-black text-white group">
+            <summary className="flex items-center justify-between px-4 min-h-[44px] cursor-pointer list-none select-none">
+              <p className="text-[10px] tracking-widest uppercase opacity-60">MARKETS • LIVE</p>
+              <svg className="w-4 h-4 opacity-60 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <div className="px-4 pb-4 space-y-2 text-[12px] font-mono">
+              <div className="flex justify-between"><span>DOW</span><span className="text-green-400">+0.84% ▲</span></div>
+              <div className="flex justify-between"><span>NASDAQ</span><span className="text-green-400">+1.22% ▲</span></div>
+              <div className="flex justify-between"><span>S&P 500</span><span className="text-green-400">+0.61% ▲</span></div>
+              <div className="flex justify-between"><span>BTC</span><span className="text-red-400">-0.34% ▼</span></div>
+              <div className="flex justify-between"><span>ETH</span><span className="text-green-400">+2.11% ▲</span></div>
+              <p className="text-[10px] opacity-40 pt-1">Powered by AI market scan • 1m delay</p>
+            </div>
+          </details>
+        </div>
+
+        {/* Desktop: 3-column newspaper layout */}
+        <div className="hidden lg:grid lg:grid-cols-12 gap-6 border-b border-black/10 pb-8">
           {/* Left rail - secondary */}
-          <div className="lg:col-span-3 order-2 lg:order-1">
+          <div className="lg:col-span-3">
             <SectionHeader title="Latest Updates" subtitle="Last hour" />
             <div className="space-y-1">
               {secondary.map((a, i) => <SecondaryCard key={i} article={a} compact />)}
@@ -92,15 +130,15 @@ export default async function HomePage() {
           </div>
 
           {/* Center - hero */}
-          <div className="lg:col-span-6 order-1 lg:order-2 border-x-0 lg:border-x border-black/10 lg:px-6">
+          <div className="lg:col-span-6 lg:border-x border-black/10 lg:px-6">
             <HeroCard article={hero} />
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
               {tertiary.map((a,i)=>(<SecondaryCard key={i} article={a} />))}
             </div>
           </div>
 
-          {/* Right - trending rail */}
-          <div className="lg:col-span-3 order-3 space-y-6">
+          {/* Right - trending rail + markets */}
+          <div className="lg:col-span-3 space-y-6">
             <TrendingRail articles={trending} title="Most Read Right Now" />
             <div className="bg-black text-white p-4">
               <p className="text-[10px] tracking-widest uppercase opacity-60">MARKETS • LIVE</p>
@@ -116,16 +154,16 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Latest Grid */}
-        <div className="mt-10">
-          <SectionHeader title="Today’s Headlines" subtitle={`${all.length} verified stories • Updated every minute`} />
+        {/* Today's Headlines — desktop only (mobile version is above) */}
+        <div className="hidden lg:block mt-10">
+          <SectionHeader title="Today's Headlines" subtitle={`${all.length} verified stories • Updated every minute`} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {latest.map((a,i)=>(<NewsCard key={i} article={a} />))}
           </div>
         </div>
 
-        {/* Category triple */}
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8 border-t border-black/10 pt-8">
+        {/* Category triple — desktop only */}
+        <div className="hidden lg:grid mt-12 grid-cols-3 gap-8 border-t border-black/10 pt-8">
           <div>
             <SectionHeader title="Business & Finance" href="/category/business"/>
             <div className="space-y-1">

@@ -5,6 +5,13 @@ export type AccountProfile = {
   name: string;
   email: string;
   picture?: string;
+  phone?: string;
+  countryCode?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
 };
 
 export type SubscriptionRecord = {

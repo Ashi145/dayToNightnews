@@ -35,6 +35,7 @@ export default function CategoryNav() {
             );
           })}
           <span className="w-px h-4 bg-black/10 mx-1" />
+          <Link href="/blog" className={`whitespace-nowrap hover:text-[#c41e1a] transition-colors ${pathname==='/blog'?'text-[#c41e1a] border-b-2 border-[#c41e1a] pb-0.5':''}`}>Blog</Link>
           <Link href="/admin" className="whitespace-nowrap text-[#c41e1a]">Live</Link>
           <Link href="#" className="whitespace-nowrap opacity-60">Video</Link>
           <Link href="#" className="whitespace-nowrap opacity-60">Podcasts</Link>
