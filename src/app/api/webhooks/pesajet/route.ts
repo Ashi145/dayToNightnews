@@ -7,21 +7,21 @@ import { eq } from 'drizzle-orm';
 export async function POST(request: Request) {
   try {
     const body = await request.text();
-    const signature = request.headers.get('x-webhook-signature');
-
-    if (!signature) {
-      return NextResponse.json(
-        { error: 'Missing webhook signature' },
-        { status: 401 }
-      );
-    }
+    const headerSignature = request.headers.get('x-webhook-signature') || request.headers.get('x-pesajet-signature') || '';
 
     const pesajet = getPesaJetClient();
-    const event = pesajet.constructWebhookEvent(body, signature);
+
+    let event;
+    try {
+      event = pesajet.constructWebhookEvent(body, headerSignature);
+    } catch (sigError) {
+      console.error('Webhook signature verification failed:', sigError);
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+    }
 
     console.log('PesaJet webhook received:', event.event, event.transactionId);
 
-    if (event.event === 'payment.completed') {
+    if (event.status === 'COMPLETED' || event.event === 'payment.completed') {
       const now = new Date();
       const expiresAt = new Date(now);
       expiresAt.setMonth(expiresAt.getMonth() + 1);
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         .where(eq(subscriptions.transactionId, event.transactionId));
 
       console.log('Subscription activated for transaction:', event.transactionId);
-    } else if (event.event === 'payment.failed') {
+    } else if (event.status === 'FAILED' || event.event === 'payment.failed') {
       await db
         .update(subscriptions)
         .set({

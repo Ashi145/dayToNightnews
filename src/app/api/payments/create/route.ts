@@ -75,6 +75,12 @@ export async function POST(request: Request) {
       description: 'DayToNight News - Monthly Briefing Subscription',
     });
 
+    const txnId = payment.transactionId || payment.id || '';
+    if (!txnId) {
+      console.error('No transaction ID in PesaJet response:', payment);
+      throw new Error('Payment gateway did not return a transaction ID');
+    }
+
     const now = new Date();
     const expiresAt = new Date(now);
     expiresAt.setMonth(expiresAt.getMonth() + 1);
@@ -84,7 +90,7 @@ export async function POST(request: Request) {
       email: cleanEmail,
       phoneNumber: cleanPhone,
       provider: validProvider,
-      transactionId: payment.transactionId,
+      transactionId: txnId,
       status: 'pending',
       plan: 'Monthly Briefing',
       amount: 7,
@@ -96,7 +102,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      transactionId: payment.transactionId,
+      transactionId: txnId,
       status: payment.status,
       reference,
     });
