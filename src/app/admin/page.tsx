@@ -1,17 +1,37 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Loader2, Play, CheckCircle2, AlertCircle, Activity, Newspaper, ShieldCheck, Cpu, FileText, Image as ImageIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Loader2, Play, CheckCircle2, AlertCircle, Activity, Newspaper, ShieldCheck, Cpu, FileText, Image as ImageIcon, Lock } from 'lucide-react';
 
 function Button({ children, className = '', disabled, ...props }: any) {
   return <button disabled={disabled} className={`inline-flex items-center justify-center px-4 py-2 text-sm font-bold uppercase tracking-widest transition-colors disabled:opacity-50 bg-black text-white hover:bg-[#c41e1a] ${className}`} {...props}>{children}</button>;
 }
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
+  const [secret, setSecret] = useState('');
   const [topic, setTopic] = useState('');
   const [jobs, setJobs] = useState<any[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [liveStats, setLiveStats] = useState({ total: 0, breaking: 0 });
+
+  async function verifyAuth(inputSecret: string) {
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secret: inputSecret }),
+      });
+      if (res.ok) {
+        setAuthorized(true);
+        document.cookie = `admin_token=${inputSecret}; path=/; max-age=86400; secure; samesite=strict`;
+        fetchJobs();
+        fetchLiveStats();
+      }
+    } catch {}
+  }
 
   async function fetchJobs() {
     const res = await fetch('/api/admin/jobs');
@@ -33,11 +53,13 @@ export default function AdminDashboard() {
   }
 
   useEffect(() => {
-    fetchJobs();
-    fetchLiveStats();
-    const interval = setInterval(() => { fetchJobs(); fetchLiveStats(); }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    if (authorized) {
+      fetchJobs();
+      fetchLiveStats();
+      const interval = setInterval(() => { fetchJobs(); fetchLiveStats(); }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [authorized]);
 
   async function triggerPipeline() {
     if (!topic) return;
@@ -57,6 +79,34 @@ export default function AdminDashboard() {
     } finally {
       setIsRunning(false);
     }
+  }
+
+  if (!authorized) {
+    return (
+      <div className="bg-[#fefcf8] min-h-screen flex items-center justify-center">
+        <div className="border-2 border-black bg-white p-8 max-w-md w-full mx-4">
+          <div className="flex items-center gap-3 mb-6">
+            <Lock className="h-6 w-6" />
+            <h1 className="text-2xl font-black">Admin Access</h1>
+          </div>
+          <p className="text-sm opacity-70 mb-4">Enter the admin secret key to access the AI Control Room.</p>
+          <input
+            type="password"
+            value={secret}
+            onChange={(e) => setSecret(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && verifyAuth(secret)}
+            placeholder="Admin secret key"
+            className="w-full border border-black/20 px-3 py-2.5 text-sm font-mono bg-[#fffefb] focus:outline-none focus:border-black mb-4"
+          />
+          <Button onClick={() => verifyAuth(secret)} disabled={!secret} className="w-full">
+            Authenticate
+          </Button>
+          <button onClick={() => router.push('/')} className="mt-3 w-full text-center text-xs font-bold uppercase tracking-widest opacity-50 hover:opacity-75">
+            Back to Home
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const agents = [

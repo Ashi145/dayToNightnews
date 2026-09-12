@@ -3,6 +3,10 @@ import { db } from '@/db';
 import { subscriptions } from '@/db/schema';
 import { eq, and, gt } from 'drizzle-orm';
 
+function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -11,6 +15,13 @@ export async function GET(request: Request) {
     if (!email) {
       return NextResponse.json(
         { error: 'Email parameter is required' },
+        { status: 400 }
+      );
+    }
+
+    if (typeof email !== 'string' || !validateEmail(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
         { status: 400 }
       );
     }

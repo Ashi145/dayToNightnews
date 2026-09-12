@@ -4,6 +4,21 @@ import { getPesaJetClient } from '@/lib/pesajet';
 import { db } from '@/db';
 import { subscriptions } from '@/db/schema';
 
+function sanitizeInput(input: string): string {
+  return input
+    .replace(/[<>]/g, '')
+    .trim()
+    .slice(0, 100);
+}
+
+function validatePhoneNumber(phone: string): boolean {
+  return /^\+?[0-9\s\-()]{7,20}$/.test(phone);
+}
+
+function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -16,6 +31,30 @@ export async function POST(request: Request) {
       );
     }
 
+    if (typeof phoneNumber !== 'string' || typeof provider !== 'string' || typeof email !== 'string') {
+      return NextResponse.json(
+        { error: 'Invalid input types' },
+        { status: 400 }
+      );
+    }
+
+    const cleanPhone = sanitizeInput(phoneNumber);
+    const cleanEmail = sanitizeInput(email);
+
+    if (!validatePhoneNumber(cleanPhone)) {
+      return NextResponse.json(
+        { error: 'Invalid phone number format' },
+        { status: 400 }
+      );
+    }
+
+    if (!validateEmail(cleanEmail)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
     if (!['mtn', 'airtel'].includes(provider)) {
       return NextResponse.json(
         { error: 'Provider must be either "mtn" or "airtel"' },
@@ -23,14 +62,15 @@ export async function POST(request: Request) {
       );
     }
 
+    const validProvider = provider as 'mtn' | 'airtel';
     const reference = `DTN-${nanoid(10)}`;
     const pesajet = getPesaJetClient();
 
     const payment = await pesajet.createPayment({
       amount: 7,
       currency: 'USD',
-      phoneNumber,
-      provider,
+      phoneNumber: cleanPhone,
+      provider: validProvider,
       reference,
       description: 'DayToNight News - Monthly Briefing Subscription',
     });
@@ -41,9 +81,9 @@ export async function POST(request: Request) {
 
     await db.insert(subscriptions).values({
       id: nanoid(),
-      email,
-      phoneNumber,
-      provider,
+      email: cleanEmail,
+      phoneNumber: cleanPhone,
+      provider: validProvider,
       transactionId: payment.transactionId,
       status: 'pending',
       plan: 'Monthly Briefing',

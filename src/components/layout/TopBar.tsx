@@ -27,7 +27,6 @@ export default function TopBar() {
           <span className="bg-[#c41e1a] text-white px-2.5 py-1 rounded-sm font-black tracking-widest uppercase text-[10px]">Subscribe for $7/month</span>
           <GoogleLoginButton />
           <Link href="/profile" className="border border-white/20 px-2.5 py-1 rounded-sm hover:bg-white hover:text-black transition-colors uppercase font-bold">Profile</Link>
-          <Link href="/admin" className="border border-white/20 px-2.5 py-1 rounded-sm hover:bg-white hover:text-black transition-colors uppercase font-bold">AI Control</Link>
         </div>
       </div>
     </div>

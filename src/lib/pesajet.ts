@@ -88,7 +88,7 @@ let clientInstance: PesaJetClient | null = null;
 
 export function getPesaJetClient(): PesaJetClient {
   if (!clientInstance) {
-    const apiKey = process.env.PESAJET_API_KEY;
+    const apiKey = process.env.PESAJET_API_KEY || process.env.PESAJET_SECRET_KEY;
     const webhookSecret = process.env.PESAJET_WEBHOOK_SECRET;
     if (!apiKey || !webhookSecret) {
       throw new Error('PESAJET_API_KEY and PESAJET_WEBHOOK_SECRET must be set');

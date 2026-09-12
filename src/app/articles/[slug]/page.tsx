@@ -284,7 +284,6 @@ This is a living story. We will update as new verified facts arrive.`}
                 <li>• No contradictions detected</li>
                 <li>• Timeline consistent</li>
               </ul>
-              <Link href="/admin" className="mt-4 block text-center bg-black text-white py-2 text-[11px] font-black uppercase tracking-widest">View full verification log →</Link>
             </div>
 
             <div>
