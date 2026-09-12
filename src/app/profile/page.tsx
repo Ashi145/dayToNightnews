@@ -2,7 +2,18 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { GOOGLE_USER_STORAGE_KEY, SUBSCRIPTION_STORAGE_KEY, type AccountProfile, type SubscriptionRecord } from '@/lib/account';
+import { GOOGLE_USER_STORAGE_KEY, type AccountProfile } from '@/lib/account';
+
+type SubscriptionData = {
+  id: string;
+  plan: string;
+  amount: number;
+  status: string;
+  provider: string;
+  phoneNumber: string;
+  startedAt: number;
+  expiresAt: number;
+};
 
 const COUNTRY_CODES = [
   { code: '+1', country: 'US', label: 'United States' },
@@ -72,7 +83,7 @@ const COUNTRY_CODES = [
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<AccountProfile | null>(null);
-  const [subscription, setSubscription] = useState<SubscriptionRecord | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState({
@@ -88,7 +99,6 @@ export default function ProfilePage() {
   useEffect(() => {
     try {
       const savedProfile = window.localStorage.getItem(GOOGLE_USER_STORAGE_KEY);
-      const savedSubscription = window.localStorage.getItem(SUBSCRIPTION_STORAGE_KEY);
       if (savedProfile) {
         const parsed = JSON.parse(savedProfile) as AccountProfile;
         setProfile(parsed);
@@ -102,9 +112,21 @@ export default function ProfilePage() {
           country: parsed.country || '',
         });
       }
-      if (savedSubscription) setSubscription(JSON.parse(savedSubscription) as SubscriptionRecord);
     } catch { /* An invalid local record is treated as signed out. */ }
   }, []);
+
+  useEffect(() => {
+    if (profile?.email) {
+      fetch(`/api/subscriptions?email=${encodeURIComponent(profile.email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.hasActiveSubscription && data.subscription) {
+            setSubscription(data.subscription);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [profile?.email]);
 
   if (!profile) {
     return (
@@ -124,6 +146,9 @@ export default function ProfilePage() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
+
+  const isActive = subscription?.status === 'active';
+  const expiresAt = subscription?.expiresAt ? new Date(subscription.expiresAt).toLocaleDateString() : null;
 
   return (
     <main className="min-h-screen bg-[#fefcf8]">
@@ -279,17 +304,29 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-[11px] font-bold tracking-widest uppercase opacity-50">Membership</p>
-              <h2 className="mt-1 text-xl font-black">{subscription?.status === 'active' ? 'Active — Monthly Briefing' : subscription ? 'Checkout awaiting completion' : 'No active membership'}</h2>
+              <h2 className="mt-1 text-xl font-black">
+                {isActive ? 'Active — Monthly Briefing' : subscription ? 'Payment pending' : 'No active membership'}
+              </h2>
             </div>
-            <span className="border border-black px-3 py-1 text-xs font-bold">{subscription?.status === 'active' ? '$2 / month' : 'Free'}</span>
+            <span className="border border-black px-3 py-1 text-xs font-bold">
+              {isActive ? '$7 / month' : 'Free'}
+            </span>
           </div>
-          {subscription && <p className="mt-4 text-sm opacity-65">Briefing email: {subscription.email}</p>}
+
+          {subscription && (
+            <div className="mt-4 space-y-1 text-sm opacity-65">
+              <p>Provider: {subscription.provider === 'mtn' ? 'MTN Mobile Money' : 'Airtel Money'}</p>
+              <p>Phone: {subscription.phoneNumber}</p>
+              {expiresAt && <p>Renews: {expiresAt}</p>}
+            </div>
+          )}
+
           {!subscription && (
             <Link href="/subscribe" className="mt-5 inline-block bg-[#c41e1a] px-4 py-2 text-xs font-black uppercase tracking-widest text-white">Start subscription</Link>
           )}
         </div>
 
-        <p className="mt-8 text-xs leading-relaxed opacity-55">Billing status is confirmed after Stripe sends a secure payment notification to the site&apos;s subscription service.</p>
+        <p className="mt-8 text-xs leading-relaxed opacity-55">Payment is processed securely via PesaJet Pay. Your mobile money details are never stored on our servers.</p>
       </section>
     </main>
   );

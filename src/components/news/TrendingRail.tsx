@@ -27,7 +27,7 @@ export default function TrendingRail({ articles, title = "Most Read" }: { articl
       <div className="mt-4 p-3 bg-[#f6f1e8] border border-black/5 text-center">
         <p className="text-[11px] font-bold uppercase tracking-widest">Get the DayToNight Briefing</p>
         <p className="text-[12px] font-serif opacity-70 mt-1">Top 5 stories at 7AM ET, verified by AI.</p>
-        <button className="mt-3 bg-black text-white w-full py-2 text-[11px] font-black uppercase tracking-widest">Subscribe $1/week</button>
+        <button className="mt-3 bg-black text-white w-full py-2 text-[11px] font-black uppercase tracking-widest">Subscribe $7/month</button>
       </div>
     </div>
   );

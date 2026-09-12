@@ -127,6 +127,22 @@ export const aiJobs = sqliteTable('ai_jobs', {
   completedAt: integer('completed_at', { mode: 'timestamp_ms' }),
 });
 
+export const subscriptions = sqliteTable('subscriptions', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').references(() => users.id),
+  email: text('email').notNull(),
+  phoneNumber: text('phone_number').notNull(),
+  provider: text('provider', { enum: ['mtn', 'airtel'] }).notNull(),
+  transactionId: text('transaction_id'),
+  status: text('status', { enum: ['pending', 'active', 'expired'] }).default('pending'),
+  plan: text('plan').default('Monthly Briefing'),
+  amount: integer('amount').default(7),
+  startedAt: integer('started_at', { mode: 'timestamp_ms' }),
+  expiresAt: integer('expires_at', { mode: 'timestamp_ms' }),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' }).defaultNow().notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).defaultNow().notNull(),
+});
+
 export const logs = sqliteTable('logs', {
   id: text('id').primaryKey(),
   level: text('level').notNull(),
@@ -141,6 +157,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   comments: many(comments),
   bookmarks: many(bookmarks),
   notifications: many(notifications),
+  subscriptions: many(subscriptions),
 }));
 
 export const articlesRelations = relations(articles, ({ one, many }) => ({
